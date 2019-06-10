@@ -228,3 +228,251 @@ const count = arr.reduce((t, c) => {
 // count => { 0: 1, 1: 2, 2: 3 }
 
 
+// 解构数组成员嵌套
+const arr = [0, 1, [2, 3, [4, 5]]];
+const [a, b, [c, d, [e, f]]] = arr;
+// a b c d e f => 0 1 2 3 4 5
+
+// 解构数组成员别名
+const arr = [0, 1, 2];
+const { 0: a, 1: b, 2: c } = arr;
+// a b c => 0 1 2
+
+// 解构数组成员默认值
+const arr = [0, 1, 2];
+const [a, b, c = 3, d = 4] = arr;
+// a b c d => 0 1 2 4
+
+// 获取随机数组成员
+const arr = [0, 1, 2, 3, 4, 5];
+const randomItem = arr[Math.floor(Math.random() * arr.length)];
+// randomItem => 1
+
+// 创建指定长度数组
+const arr = [...new Array(3).keys()];
+// arr => [0, 1, 2]
+
+// 创建指定长度且值相等的数组
+const arr = new Array(3).fill(0);
+// arr => [0, 0, 0]
+
+// reduce代替map和filter
+const _arr = [0, 1, 2];
+
+// map
+const arr = _arr.map(v => v * 2);
+const arr = _arr.reduce((t, c) => {
+    t.push(c * 2);
+    return t;
+}, []);
+// arr => [0, 2, 4]
+
+// filter
+const arr = _arr.filter(v => v > 0);
+const arr = _arr.reduce((t, c) => {
+    c > 0 && t.push(c);
+    return t;
+}, []);
+// arr => [1, 2]
+
+// map和filter
+const arr = _arr.map(v => v * 2).filter(v => v > 2);
+const arr = _arr.reduce((t, c) => {
+    c = c * 2;
+    c > 2 && t.push(c);
+    return t;
+}, []);
+// arr => [4]
+
+/*-----------------------------------------------Array Skill----------------------------------------------------------------*/
+// 克隆对象
+const _obj = { a: 0, b: 1, c: 2 }; // 以下方法任选一种
+const obj = { ..._obj };
+const obj = JSON.parse(JSON.stringify(_obj));
+// obj => { a: 0, b: 1, c: 2 }
+
+// 合并对象
+const obj1 = { a: 0, b: 1, c: 2 };
+const obj2 = { c: 3, d: 4, e: 5 };
+const obj = { ...obj1, ...obj2 };
+// obj => { a: 0, b: 1, c: 3, d: 4, e: 5 }
+
+// 对象字面量：获取环境变量时必用此方法，用它一直爽，一直用它一直爽
+const env = "prod";
+const link = {
+    dev: "Development Address",
+    test: "Testing Address",
+    prod: "Production Address"
+}[env];
+// link => "Production Address"
+
+// 对象变量属性
+const flag = false;
+const obj = {
+    a: 0,
+    b: 1,
+    [flag ? "c" : "d"]: 2
+};
+// obj => { a: 0, b: 1, d: 2 }
+
+// 创建纯空对象
+const obj = Object.create(null);
+Object.prototype.a = 0;
+// obj => {}
+
+// 删除对象无用属性
+const obj = { a: 0, b: 1, c: 2 }; // 只想拿b和c
+const { a, ...rest } = obj;
+// rest => { b: 1, c: 2 }
+
+// 解构对象属性嵌套
+const obj = { a: 0, b: 1, c: { d: 2, e: 3 } };
+const { c: { d, e } } = obj;
+// d e => 2 3
+
+// 解构对象属性别名
+const obj = { a: 0, b: 1, c: 2 };
+const { a, b: d, c: e } = obj;
+// a d e => 0 1 2
+
+// 解构对象属性默认值
+const obj = { a: 0, b: 1, c: 2 };
+const { a, b = 2, d = 3 } = obj;
+// a b d => 0 1 3
+
+/*-----------------------------------------------Function Skill----------------------------------------------------------------*/
+// 函数自执行
+const Func = function() {}(); // 常用
+
+(function() {})(); // 常用
+(function() {}()); // 常用
+[function() {}()];
+
++ function() {}();
+- function() {}();
+~ function() {}();
+! function() {}();
+
+new function() {};
+new function() {}();
+void function() {}();
+typeof function() {}();
+delete function() {}();
+
+1, function() {}();
+1 ^ function() {}();
+1 > function() {}();
+
+// 隐式返回值：只能用于单语句返回值箭头函数，如果返回值是对象必须使用()包住
+const Func = function(name) {
+    return "I Love " + name;
+};
+// 换成
+const Func = name => "I Love " + name;
+
+// 一次性函数：适用于运行一些只需执行一次的初始化代码
+function Func() {
+    console.log("x");
+    Func = function() {
+        console.log("y");
+    }
+}
+
+// 惰性载入函数：函数内判断分支较多较复杂时可大大节约资源开销
+function Func() {
+    if (a === b) {
+        console.log("x");
+    } else {
+        console.log("y");
+    }
+}
+// 换成
+function Func() {
+    if (a === b) {
+        Func = function() {
+            console.log("x");
+        }
+    } else {
+        Func = function() {
+            console.log("y");
+        }
+    }
+    return Func();
+}
+
+// 检测非空参数
+function IsRequired() {
+    throw new Error("param is required");
+}
+function Func(name = IsRequired()) {
+    console.log("I Love " + name);
+}
+Func(); // "param is required"
+Func("雅君妹纸"); // "I Love 雅君妹纸"
+
+
+// 字符串创建函数
+const Func = new Function("name", "console.log(\"I Love \" + name)");
+
+// 优雅处理错误信息
+try {
+    Func();
+} catch (e) {
+    location.href = "https://stackoverflow.com/search?q=[js]+" + e.message;
+}
+
+// 优雅处理Async/Await参数
+function AsyncTo(promise) {
+    return promise.then(data => [null, data]).catch(err => [err]);
+}
+const [err, res] = await AsyncTo(Func());
+
+// 优雅处理多个函数返回值
+function Func() {
+    return Promise.all([
+        fetch("/user"),
+        fetch("/comment")
+    ]);
+}
+const [user, comment] = await Func(); // 需在async包围下使用
+
+/*-----------------------------------------------DOM Skill----------------------------------------------------------------*/
+// 显示全部DOM边框：调试页面元素边界时使用
+[].forEach.call($$("*"), dom => {
+    dom.style.outline = "1px solid #" + (~~(Math.random() * (1 << 24))).toString(16);
+});
+
+// 自适应页面：页面基于一张设计图但需做多款机型自适应，元素尺寸使用rem进行设置
+function AutoResponse(width = 750) {
+    const target = document.documentElement;
+    target.clientWidth >= 600
+        ? (target.style.fontSize = "80px")
+        : (target.style.fontSize = target.clientWidth / width * 100 + "px");
+}
+
+// 过滤XSS
+function FilterXss(content) {
+    let elem = document.createElement("div");
+    elem.innerText = content;
+    const result = elem.innerHTML;
+    elem = null;
+    return result;
+}
+
+// 存取LocalStorage：反序列化取，序列化存
+const love = JSON.parse(localStorage.getItem("love"));
+localStorage.setItem("love", JSON.stringify("I Love 雅君妹纸"));
+
+/*结语
+写到最后总结得差不多了，后续如果我想起还有哪些JavaScript开发技巧遗漏的，会继续在这篇文章上补全，同时也希望各位倔友对文章里的要点进行补充或者提出自己的见解。欢迎在下方进行评论或补充喔，喜欢的点个赞或收个藏，保证你在开发时用得上。
+最后送大家一个键盘。。。
+
+(_=>[..."`1234567890-=~~QWERTYUIOP[]\\~ASDFGHJKL;'~~ZXCVBNM,./~"].map(x=>(o+=`/${b='_'.repeat(w=x<y?2:' 667699'[x=["Bs","Tab","Caps","Enter"][p++]||'Shift',p])}\\|`,m+=y+(x+'    ').slice(0,w)+y+y,n+=y+b+y+y,l+=' __'+b)[73]&&(k.push(l,m,n,o),l='',m=n=o=y),m=n=o=y='|',p=l=k=[])&&k.join`
+`)()
+
+
+作者：JowayYoung
+链接：https://juejin.im/post/5cc7afdde51d456e671c7e48
+来源：掘金
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。*/
+
